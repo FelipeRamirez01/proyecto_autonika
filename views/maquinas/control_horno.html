@@ -1,0 +1,83 @@
+{% extends "base_admin.html" %}
+{% block title %}Control Horno Túnel{% endblock %}
+
+{% block content %}
+
+    <style>
+        body {
+            background: #1b1f22;
+            color: white;
+        }
+        .container-horno {
+            background: #2a2d31;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .zona {
+            display: inline-block;
+            width: 3%;
+            height: 80px;
+            margin: 1px;
+            background-color: red;
+            text-align: center;
+            font-size: 10px;
+            color: white;
+        }
+    </style>
+
+
+<div class="container mt-4 text-center">
+    <h2>CONTROL HORNO TÚNEL</h2>
+
+    <div class="container-horno d-flex justify-content-center flex-wrap">
+        {% for dato in datos %}
+            <div class="zona" style="background-color: {% if dato.estado == 'ok' %}green{% elif dato.estado == 'alerta' %}orange{% else %}red{% endif %}; margin: 5px; padding: 10px; color: white;">
+                <div>{{ dato.zona }}</div>
+                <div>{{ dato.temperatura_real }}°C</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <canvas id="grafico" height="100"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const zonasLabelsJS = {{ datos | map(attribute='zona') | list | tojson | safe }};
+const temperaturasRealesJS = {{ datos | map(attribute='temperatura_real') | list | tojson | safe }};
+const temperaturasObjetivoJS = {{ datos | map(attribute='temperatura_objetivo') | list | tojson | safe }};
+
+
+const ctx = document.getElementById('grafico').getContext('2d');
+const grafico = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: zonasLabelsJS,
+        datasets: [
+            {
+                label: 'Temperatura Real',
+                data: temperaturasRealesJS,
+                borderColor: 'blue',
+                fill: false
+            },
+            {
+                label: 'Temperatura Objetivo',
+                data: temperaturasObjetivoJS,
+                borderColor: 'red',
+                fill: false
+            }
+        ]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+</script>
+
+
+
+{% endblock %}

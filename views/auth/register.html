@@ -1,0 +1,173 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f5f5f5;
+    }
+    .card {
+        border-radius: 1rem;
+    }
+    .valid {
+        color: green;
+        font-weight: bold;
+    }
+    .invalid {
+        color: red;
+        font-weight: bold;
+    }
+    .alert-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+    .fade-out {
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+    }
+</style>
+
+<div class="alert-container">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} text-center py-2" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+</div>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+    <div class="card shadow-lg p-4 w-100" style="max-width: 500px;">
+        <h2 class="text-center text-primary mb-4">Registro de usuarios</h2>
+        <form id="registerForm" action="/register" method="POST">
+            <input type="text" name="nombre" id="nombre" class="form-control mb-3" placeholder="Nombres y Apellidos">
+            <input type="text" name="identificacion" id="identificacion" class="form-control mb-3" placeholder="Identificación">
+            <input type="email" name="email" id="email" class="form-control mb-3" placeholder="Correo electrónico">
+            <input type="text" name="telefono" id="telefono" class="form-control mb-3" placeholder="Teléfono">
+
+            <select name="id_rol" id="id_rol" class="form-select mb-3">
+                {% for rol in roles %}
+                    <option value="{{ rol.id }}">{{ rol.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <div id="torre-apto-container" style="display:none;">
+                <select name="id_torre" id="id_torre" class="form-select mb-3">
+                    <option value="">Seleccione una torre</option>
+                    {% for torre in torres %}
+                        <option value="{{ torre.id }}">{{ torre.nombre }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="id_apartamento" id="id_apartamento" class="form-select mb-3">
+                    <option value="">Seleccione un apartamento</option>
+                    {% for apto in apartamentos %}
+                        <option value="{{ apto.id }}">{{ apto.numero }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña">
+                <ul id="password-requirements" class="mt-2 small">
+                    <li id="lower-upper" class="invalid">✔ Minúsculas y Mayúsculas</li>
+                    <li id="number" class="invalid">✔ Número (0-9)</li>
+                    <li id="special" class="invalid">✔ Carácter especial (^!@#$%&*)</li>
+                    <li id="length" class="invalid">✔ Al menos 10 caracteres</li>
+                </ul>
+                <div class="mt-2">
+                    <span>Fortaleza de la contraseña:</span>
+                    <span id="password-strength" class="badge bg-secondary">BAJA</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">
+                <i class="fas fa-user-plus"></i> Registrarse
+            </button>
+            <a href="{{ url_for('usuarios.listar_usuarios') }}" class="btn btn-secondary mt-3 w-100">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </form>
+    </div>
+</div>
+
+<!-- JS: FontAwesome, SweetAlert, Validaciones -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    const passwordInput = document.getElementById('password');
+    const lowerUpper = document.getElementById("lower-upper");
+    const number = document.getElementById("number");
+    const special = document.getElementById("special");
+    const length = document.getElementById("length");
+    const strength = document.getElementById("password-strength");
+    let isPasswordValid = false;
+
+    passwordInput.addEventListener("input", () => {
+        const pwd = passwordInput.value;
+        const hasLower = /[a-z]/.test(pwd);
+        const hasUpper = /[A-Z]/.test(pwd);
+        const hasNumber = /\d/.test(pwd);
+        const hasSpecial = /[\^!@#$%&*]/.test(pwd);
+        const hasLength = pwd.length >= 10;
+
+        lowerUpper.className = hasLower && hasUpper ? "valid" : "invalid";
+        number.className = hasNumber ? "valid" : "invalid";
+        special.className = hasSpecial ? "valid" : "invalid";
+        length.className = hasLength ? "valid" : "invalid";
+
+        let score = [hasLower && hasUpper, hasNumber, hasSpecial, hasLength].filter(Boolean).length;
+        strength.textContent = score < 2 ? "BAJA" : score < 4 ? "MEDIA" : "ALTA";
+        strength.className = "badge " + (score < 2 ? "bg-danger" : score < 4 ? "bg-warning text-dark" : "bg-success");
+
+        isPasswordValid = score === 4;
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        const requiredFields = ['nombre', 'identificacion', 'email', 'telefono', 'password'];
+        let valid = requiredFields.every(id => document.getElementById(id).value.trim() !== "");
+
+        const rolText = document.getElementById('id_rol').selectedOptions[0].text.toLowerCase();
+        if (rolText.includes('residente')) {
+            valid = valid && document.getElementById('id_torre').value && document.getElementById('id_apartamento').value;
+        }
+
+        if (!valid) {
+            e.preventDefault();
+            return Swal.fire({ icon: 'error', title: 'Campos incompletos', text: 'Todos los campos son obligatorios.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+        }
+
+        if (!isPasswordValid) {
+            e.preventDefault();
+            Swal.fire({ icon: 'error', title: 'Contraseña inválida', text: 'La contraseña no cumple los requisitos.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const rolSelect = document.getElementById('id_rol');
+        const container = document.getElementById('torre-apto-container');
+        const toggle = () => {
+            const rolText = rolSelect.options[rolSelect.selectedIndex].text.toLowerCase();
+            container.style.display = rolText.includes('residente') ? 'block' : 'none';
+        };
+        rolSelect.addEventListener('change', toggle);
+        toggle(); // init
+    });
+
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.alert').forEach(alert => {
+            setTimeout(() => {
+                alert.classList.add('fade-out');
+                setTimeout(() => alert.remove(), 500);
+            }, 4000);
+        });
+    });
+</script>
+{% endblock %}
