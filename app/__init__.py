@@ -63,6 +63,10 @@ def create_app():
     from controllers.configuracion import config_bp
     app.register_blueprint(config_bp, url_prefix='/admin/configuracion')
 
+    from controllers.maquinas import maquinas_bp
+    app.register_blueprint(maquinas_bp, url_prefix='/maquinas')
+
+
 
     #UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'comprobantes')
     UPLOAD_FOLDER = os.path.join(os.getcwd(), 'static/comprobantes_reservas')

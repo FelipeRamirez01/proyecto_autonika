@@ -1,0 +1,57 @@
+{% extends "base_admin.html" %}
+{% block title %}Detalle Máquina{% endblock %}
+
+{% block content %}
+
+<div class="container my-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h1 class="card-title h3 mb-4 text-primary">
+                🏭 {{ maquina.nombre }}
+            </h1>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <p><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</p>
+                    <p><strong>🌡️ Temp. Máx:</strong> {{ maquina.temperatura_max }} °C</p>
+                    <p><strong>🌡️ Temp. Mín:</strong> {{ maquina.temperatura_min }} °C</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</p>
+                    <p><strong>📦 Producción mínima:</strong> {{ maquina.produccion_min }} und/min</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <h4 class="mb-3">📑 Últimos Reportes</h4>
+            {% if reportes %}
+                <ul class="list-group list-group-flush mb-4">
+                    {% for reporte in reportes %}
+                    <li class="list-group-item">
+                        <strong>{{ reporte.timestamp }}</strong> —
+                        🌡️ Temp: {{ reporte.temperatura }} °C |
+                        ⚙️ Vel: {{ reporte.velocidad }} rpm |
+                        📦 Prod: {{ reporte.produccion }} und/min
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="alert alert-warning">⚠️ No hay reportes aún.</div>
+            {% endif %}
+
+            <h4 class="mb-3">📊 Gráficas</h4>
+            <a href="{{ url_for('maquinas.grafica', id=maquina.id) }}" class="btn btn-outline-primary mb-4">
+                Ver Gráficas de Rendimiento
+            </a>
+
+            <div>
+                <a href="{{ url_for('maquinas.index') }}" class="btn btn-secondary">
+                    ⬅️ Volver al Panel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

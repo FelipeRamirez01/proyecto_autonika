@@ -1,0 +1,56 @@
+{% extends "base_admin.html" %}
+{% block title %}Panel de Máquinas{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold text-dark">🛠️ Panel de Máquinas Industriales</h1>
+    <a href="{{ url_for('maquinas.nueva_maquina') }}"
+       class="btn btn-success btn-lg shadow-sm">
+        + Añadir Nueva Máquina
+    </a>
+</div>
+
+{% if maquinas %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle shadow-sm bg-white rounded">
+            <thead class="table-dark text-uppercase small">
+                <tr>
+                    <th>#️⃣ Nº</th>
+                    <th>🧾 Nombre</th>
+                    <th>📍 Ubicación</th>
+                    <th>🌡️ Temp. Máx</th>
+                    <th>🌡️ Temp. Mín</th>
+                    <th>⚙️ Velocidad</th>
+                    <th>🏭 Producción</th>
+                    <th>🔍 Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="fs-6">
+                {% for maquina in maquinas %}
+                <tr>
+                    <td class="fw-semibold">{{ loop.index }}</td>
+                    <td class="fw-semibold">{{ maquina.nombre }}</td>
+                    <td>{{ maquina.ubicacion }}</td>
+                    <td>{{ maquina.temperatura_max }} °C</td>
+                    <td>{{ maquina.temperatura_min }} °C</td>
+                    <td>{{ maquina.velocidad }} rpm</td>
+                    <td>{{ maquina.produccion_min }} und/min</td>
+                    <td>
+                        <a href="{{ url_for('maquinas.ver_maquina', id=maquina.id) }}"
+                           class="btn btn-primary btn-sm shadow">
+                            Ver Detalles
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-warning mt-5 text-center fs-5" role="alert">
+        ⚠️ No hay máquinas registradas en el sistema.
+    </div>
+{% endif %}
+
+{% endblock %}

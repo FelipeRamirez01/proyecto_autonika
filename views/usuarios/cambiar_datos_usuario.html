@@ -1,8 +1,6 @@
-{% if usuario.id_rol == 1%}
-{% extends "base_usuario.html" %}
-{% else %}
+
 {% extends "base_admin.html" %}
-{% endif %}
+
 {% block title %}Editar Datos{% endblock %}
 
 {% block content %}
@@ -33,15 +31,7 @@
                 <input type="text" name="identificacion" id="identificacion" class="form-control"
                     value="{{ usuario.identificacion }}" disabled>
             </div>
-            {% if usuario.id_rol == 1%}
-            <div class="mb-3">
-                <label class="fw-bold" for="nombre">Unidad Residencial:</label>
-                <input type="text" name="nombre" id="nombre" class="form-control"
-                    value="Torre: {{ usuario.casa.torre.nombre }} - Apartamento: {{ usuario.casa.apartamento.numero }}"
-                    disabled>
-            </div>
-            {% endif %}
-
+            
             <div class="mb-3">
                 <label class="fw-bold" for="email">Email:</label>
                 <input type="email" name="email" id="email" class="form-control" value="{{ usuario.email }}">
@@ -68,15 +58,11 @@
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
         </form>
-        {% if usuario.id_rol == 1%}
-        <a href="{{ url_for('main.home_usuario') }}" class="btn btn-secondary mt-3 w-100">
+
+        <a href="{{ url_for('usuarios.home_admin') }}" class="btn btn-secondary mt-3 w-100">
             <i class="fas fa-arrow-left"></i> Volver
         </a>
-        {% else %}
-        <a href="{{ url_for('main.home_admin') }}" class="btn btn-secondary mt-3 w-100">
-            <i class="fas fa-arrow-left"></i> Volver
-        </a>
-        {% endif %}
+    
     </div>
 </div>
 

@@ -1,0 +1,63 @@
+{% extends "base_admin.html" %}
+{% block title %}Gráficas - {{ maquina.nombre }}{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<h1>Gráficas de {{ maquina.nombre }}</h1>
+
+<h2>Temperatura</h2>
+<canvas id="grafico_temp"></canvas>
+
+<h2>Velocidad</h2>
+<canvas id="grafico_vel"></canvas>
+
+<h2>Producción</h2>
+<canvas id="grafico_prod"></canvas>
+
+<script>
+    const reportes = {{ reportes | tojson }};
+    const labels = reportes.map(r => new Date(r.timestamp).toLocaleTimeString());
+
+    const tempData = reportes.map(r => r.temperatura);
+    const velData = reportes.map(r => r.velocidad);
+    const prodData = reportes.map(r => r.produccion);
+
+    new Chart(document.getElementById('grafico_temp'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Temperatura (°C)',
+                data: tempData,
+                borderColor: 'red',
+                fill: false
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('grafico_vel'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Velocidad (rpm)',
+                data: velData,
+                borderColor: 'blue',
+                fill: false
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('grafico_prod'), {
+        type: 'line',
+        data: prodData,
+        labels: labels,
+        datasets: [{
+            label: 'Producción (u/min)',
+            data: prodData,
+            borderColor: 'green',
+            fill: false
+        }]
+    });
+</script>
+{% endblock %}
