@@ -61,7 +61,10 @@ def create_app():
     app.register_blueprint(api_mail, url_prefix='/api_mail')
 
     from controllers.configuracion import config_bp
-    app.register_blueprint(config_bp, url_prefix='/admin/configuracion')
+    app.register_blueprint(config_bp, url_prefix='/configuracion')
+
+    from controllers.log import log_bp
+    app.register_blueprint(log_bp, url_prefix='/logs')
 
     from controllers.maquinas import maquinas_bp
     app.register_blueprint(maquinas_bp, url_prefix='/maquinas')

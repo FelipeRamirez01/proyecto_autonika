@@ -30,14 +30,14 @@ def require_permission(*permission_names):
 
 @config_bp.route('')
 @login_required
-@require_permission('Configuracion')
+#@require_permission('Configuracion')
 def configuracion():
     registrar_log(current_user.id,"Configuracion", "Visualiza opciones de configuracion") 
     return render_template('config/configuracion.html')
 
 @config_bp.route("/datos_conjunto", methods=["GET", "POST"])
 @login_required
-@require_permission('Configuracion')
+#@require_permission('Configuracion')
 def gestionar_datos_conjunto():
     datos = Datos_app.query.first()  # Solo debe existir un registro
     if request.method == "POST":
@@ -48,39 +48,21 @@ def gestionar_datos_conjunto():
         carpeta_config = os.path.join(base_dir, 'static', 'configuracion')
         os.makedirs(carpeta_config, exist_ok=True)
 
-        terminos_pdf = request.files.get("terminos_pdf")
-        politicas_pdf = request.files.get("politicas_pdf")
-
-        if terminos_pdf and terminos_pdf.filename.endswith(".pdf"):
-            filename = "terminos_condiciones.pdf"
-            ruta_terminos = os.path.join(carpeta_config, filename)
-            terminos_pdf.save(ruta_terminos)
-            datos.terminos_pdf = filename
-
-        if politicas_pdf and politicas_pdf.filename.endswith(".pdf"):
-            filename = "politicas_privacidad.pdf"
-            ruta_politicas = os.path.join(carpeta_config, filename)
-            politicas_pdf.save(ruta_politicas)
-            datos.politicas_pdf = filename
+    
 
         if datos:
             datos.nombre = request.form["nombre"]
             datos.direccion = request.form["direccion"]
             datos.telefono = request.form["telefono"]
-            datos.nit = request.form["nit"]
-            datos.numero_cuenta = request.form["numero_cuenta"]
-            datos.codigo_cuenta = request.form["codigo_cuenta"]
+            datos.email = request.form["nit"]
 
         else:
             datos = Datos_app(
                 nombre=request.form["nombre"],
                 direccion=request.form["direccion"],
                 telefono=request.form["telefono"],
-                nit=request.form["nit"],
-                numero_cuenta=request.form["numero_cuenta"],
-                codigo_cuenta=request.form["codigo_cuenta"],
-                terminos_pdf="terminos_condiciones.pdf" if terminos_pdf else None,
-                politicas_pdf="politicas_privacidad.pdf" if politicas_pdf else None
+                email=request.form["nit"],
+                
             )
             db.session.add(datos)
 
@@ -92,7 +74,7 @@ def gestionar_datos_conjunto():
 
 @config_bp.route('/eliminar_pdf/<string:tipo>', methods=['POST','GET' ])
 @login_required
-@require_permission('Configuracion')
+#@require_permission('Configuracion')
 def eliminar_pdf(tipo):
     datos = Datos_app.query.first()
     base_dir = os.path.abspath(os.path.join(current_app.root_path, '..'))
@@ -118,7 +100,7 @@ def eliminar_pdf(tipo):
 # Listar todos los roles
 @config_bp.route('/roles', methods=['GET', 'POST'])
 @login_required
-@require_permission('Ver Roles')
+#@require_permission('Ver Roles')
 def listar_roles():
 
     #roles = Roles.query.all()
@@ -131,7 +113,7 @@ def listar_roles():
 
 @config_bp.route('/roles/crear', methods=['GET', 'POST'])
 @login_required
-@require_permission('Crear Roles')
+#@require_permission('Crear Roles')
 def gestionar_roles():
     if request.method == 'POST':
         nombre = request.form.get('nombre')
@@ -160,7 +142,7 @@ def gestionar_roles():
 # Editar el rol que se desea
 @config_bp.route('/roles/editar/<int:id>', methods=['GET', 'POST'])
 @login_required
-@require_permission('Modificar Roles')
+#@require_permission('Modificar Roles')
 def editar_rol(id):
     rol = Roles.query.get_or_404(id)
     permisos = Permisos.query.all()  # Obtener todos los permisos disponibles
@@ -192,7 +174,7 @@ def editar_rol(id):
 # Elimina el rol seleccionado
 @config_bp.route('/roles/eliminar_rol/<int:rol_id>', methods=['POST'])
 @login_required
-@require_permission('Eliminar Roles')
+#@require_permission('Eliminar Roles')
 def eliminar_rol(rol_id):
     if request.method == 'POST':
         rol = Roles.query.get_or_404(rol_id)

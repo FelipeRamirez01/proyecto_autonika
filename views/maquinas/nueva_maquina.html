@@ -1,28 +1,115 @@
 {% extends "base_admin.html" %}
-{% block title %}Registrar Maquina{% endblock %}
+{% block title %}Registrar Máquina{% endblock %}
 
 {% block content %}
-    <h1>Registrar Nueva Máquina</h1>
-    <form action="{{ url_for('maquinas.nueva_maquina') }}" method="POST">
-        <label>Nombre:</label><br>
-        <input type="text" name="nombre" required><br>
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Registrar Nueva Máquina</h4>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('maquinas.nueva_maquina') }}" method="POST">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre de la Máquina:</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
 
-        <label>Ubicación:</label><br>
-        <input type="text" name="ubicacion" required><br>
+                <div class="mb-3">
+                    <label for="tipo" class="form-label">Tipo de Máquina:</label>
+                    <select class="form-select" id="tipo" name="tipo" required>
+                        <option value="">--Seleccione--</option>
+                        <option value="moldeo">Moldeo</option>
+                        <option value="apilado">Apilado</option>
+                        <option value="secador">Secador</option>
+                        <option value="horno">Horno</option>
+                        <option value="descargue">Descargue</option>
+                    </select>
+                </div>
 
-        <label>Temperatura Máxima:</label><br>
-        <input type="number" name="temperatura_max" required><br>
+                <div class="mb-3">
+                    <label for="ubicacion" class="form-label">Ubicación:</label>
+                    <input type="text" class="form-control" id="ubicacion" name="ubicacion" required>
+                </div>
 
-        <label>Temperatura Mínima:</label><br>
-        <input type="number" name="temperatura_min" required><br>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="temperatura_max" class="form-label">Temperatura Máxima:</label>
+                        <input type="number" class="form-control" id="temperatura_max" name="temperatura_max" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="temperatura_min" class="form-label">Temperatura Mínima:</label>
+                        <input type="number" class="form-control" id="temperatura_min" name="temperatura_min" required>
+                    </div>
+                </div>
 
-        <label>Velocidad (rpm):</label><br>
-        <input type="number" name="velocidad" required><br>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="velocidad" class="form-label">Velocidad (rpm):</label>
+                        <input type="number" class="form-control" id="velocidad" name="velocidad" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="produccion_min" class="form-label">Producción mínima (unidades/min):</label>
+                        <input type="number" class="form-control" id="produccion_min" name="produccion_min" required>
+                    </div>
+                </div>
 
-        <label>Producción mínima (unidades/min):</label><br>
-        <input type="number" name="produccion_min" required><br>
+                <!-- Campos específicos para cada tipo -->
+                <div id="moldeo-fields" class="mb-3 d-none">
+                    <label class="form-label">Presión de moldeo (psi):</label>
+                    <input type="number" class="form-control" name="presion_moldeo">
+                </div>
 
-        <br>
-        <button type="submit">Guardar</button>
-    </form>
+                <div id="apilado-fields" class="mb-3 d-none">
+                    <label class="form-label">Capacidad de apilado (kg):</label>
+                    <input type="number" class="form-control" name="capacidad_apilado">
+                </div>
+
+                <div id="secador-fields" class="mb-3 d-none">
+                    <label class="form-label">Tiempo de secado (minutos):</label>
+                    <input type="number" class="form-control" name="tiempo_secado">
+                </div>
+
+                <div id="horno-fields" class="mb-3 d-none">
+                    <label class="form-label">Consumo de gas (m³/h):</label>
+                    <input type="number" class="form-control" name="consumo_gas">
+                </div>
+
+                <div id="descargue-fields" class="mb-3 d-none">
+                    <label class="form-label">Velocidad de descargue (m/s):</label>
+                    <input type="number" class="form-control" name="velocidad_descargue">
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const tipoSelect = document.getElementById('tipo');
+
+    const fields = {
+        moldeo: document.getElementById('moldeo-fields'),
+        apilado: document.getElementById('apilado-fields'),
+        secador: document.getElementById('secador-fields'),
+        horno: document.getElementById('horno-fields'),
+        descargue: document.getElementById('descargue-fields'),
+    };
+
+    tipoSelect.addEventListener('change', function () {
+        const tipo = this.value;
+
+        // Ocultar todos
+        for (let key in fields) {
+            fields[key].classList.add('d-none');
+        }
+
+        // Mostrar los correspondientes
+        if (fields[tipo]) {
+            fields[tipo].classList.remove('d-none');
+        }
+    });
+</script>
 {% endblock %}

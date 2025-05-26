@@ -1,0 +1,74 @@
+{% extends "base_admin.html" %}
+{% block title %}Registro de Máquina{% endblock %}
+
+{% block content %}
+<script>
+    function mostrarCampos() {
+        const tipo = document.getElementById('tipo_maquina').value;
+        const secciones = document.querySelectorAll('.seccion');
+        secciones.forEach(div => div.style.display = 'none');
+        if (tipo) document.getElementById(tipo).style.display = 'block';
+    }
+</script>
+
+<h2>Registrar Máquina</h2>
+
+<form method="POST">
+
+    <label for="nombre">Nombre de la máquina:</label>
+    <input type="text" name="nombre" id="nombre" required><br><br>
+
+    <label for="tipo_maquina">Tipo de máquina:</label>
+    <select id="tipo_maquina" name="tipo_maquina" onchange="mostrarCampos()" required>
+        <option value="">Seleccione</option>
+        <option value="moldeo">Moldeo</option>
+        <option value="apilado">Apilado</option>
+        <option value="secador">Secador</option>
+        <option value="horno">Horno</option>
+        <option value="descargue">Descargue</option>
+    </select>
+
+    <!-- Moldeo -->
+    <div class="seccion" id="moldeo" style="display:none;">
+        <input name="cortes_por_minuto" placeholder="Cortes por minuto"><br>
+        <input name="velocidad_cajones" placeholder="Velocidad de cajones"><br>
+        <input name="velocidad_extrusora" placeholder="Velocidad de la extrusora"><br>
+        <input name="tiempo_parada" placeholder="Tiempo de parada"><br>
+    </div>
+
+    <!-- Apilado -->
+    <div class="seccion" id="apilado" style="display:none;">
+        <input name="mesas_endagadas" placeholder="Mesas endagadas"><br>
+        <input name="tiempo_ultima_mesa" placeholder="Tiempo de última mesa"><br>
+    </div>
+
+    <!-- Secador -->
+    <div class="seccion" id="secador" style="display:none;">
+        <input name="descargue_bajometa_tiempo" placeholder="Descargue bajometa (tiempo)"><br>
+        <input name="tiempo_carga_bajonetas" placeholder="Tiempo carga bajonetas"><br>
+        <label><input type="checkbox" name="funcionamiento_brazo_descargue"> Brazo descargue funciona</label><br>
+        <label><input type="checkbox" name="funcionamiento_brazo_cargue"> Brazo cargue funciona</label><br>
+        <input name="temperatura_secador" placeholder="Temperatura del secador"><br>
+        <input name="bajonetas_ingresadas" placeholder="Bajonetas ingresadas"><br>
+        <input name="bajonetas_salidas" placeholder="Bajonetas salidas"><br>
+    </div>
+
+    <!-- Horno -->
+    <div class="seccion" id="horno" style="display:none;">
+        <input name="carros_empujados_diarios" placeholder="Carros empujados diarios"><br>
+        <input name="tiempo_entre_empujes" placeholder="Tiempo entre empujes"><br>
+        <h4>Temperaturas (40)</h4>
+        {% for i in range(1, 41) %}
+        <input name="temperatura_{{i}}" placeholder="Temperatura {{i}}"><br>
+        {% endfor %}
+    </div>
+
+    <!-- Descargue -->
+    <div class="seccion" id="descargue" style="display:none;">
+        <input name="carros_descargados" placeholder="Número de carros descargados"><br>
+        <input name="paquetes_formados" placeholder="Número de paquetes formados"><br>
+    </div>
+
+    <button type="submit">Registrar</button>
+</form>
+{% endblock %}

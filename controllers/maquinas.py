@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,  session, jsonify
 from flask_login import login_required, current_user, login_user, logout_user
 from app import db, login_manager
-from models.maquinas import Maquina, Reporte
+from models.maquinas import Maquina, Reporte, Moldeo, Apilado, Secador, Horno, Descargue, TemperaturaHorno
+
+from datetime import datetime
 
 
 maquinas_bp = Blueprint("maquinas", __name__)
@@ -12,21 +14,31 @@ def index():
     maquinas = Maquina.query.all()
     return render_template('maquinas/index.html', maquinas=maquinas)
 
-@maquinas_bp.route('/maquina/nueva', methods=['GET', 'POST'])
+@maquinas_bp.route('/nueva_maquina', methods=['GET', 'POST'])
 @login_required
 def nueva_maquina():
     if request.method == 'POST':
+
+        nombre = request.form.get('nombre', '').strip()
+        ubicacion = request.form['ubicacion']
+        temperatura_max = request.form['temperatura_max']
+        temperatura_min = request.form['temperatura_min']
+        velocidad = request.form['velocidad']
+        produccion_min = request.form['produccion_min']
+        tipo = request.form['tipo']
+
         nueva = Maquina(
-            nombre=request.form['nombre'],
-            ubicacion=request.form['ubicacion'],
-            temperatura_max=request.form['temperatura_max'],
-            temperatura_min=request.form['temperatura_min'],
-            velocidad=request.form['velocidad'],
-            produccion_min=request.form['produccion_min']
+            nombre=nombre,
+            ubicacion=ubicacion,
+            temperatura_max=temperatura_max,
+            temperatura_min=temperatura_min,
+            velocidad=velocidad,
+            produccion_min=produccion_min,
+            tipo=tipo
         )
         db.session.add(nueva)
         db.session.commit()
-        return redirect(url_for('maquinas.index'))
+
     return render_template('maquinas/nueva_maquina.html')
 
 @maquinas_bp.route('/maquina/<int:id>')
