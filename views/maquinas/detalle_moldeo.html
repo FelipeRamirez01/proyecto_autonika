@@ -1,0 +1,11 @@
+{% extends "base_admin.html" %}
+{% block title %}Detalle de Moldeo{% endblock %}
+{% block content %}
+<h2>Detalles de Máquina de Moldeo: {{ maquina.nombre }}</h2>
+<ul>
+    <li>Ubicación: {{ maquina.ubicacion }}</li>
+    <li>Presión de moldeo: {{ datos.presion_moldeo }} psi</li>
+    <li>Velocidad: {{ maquina.velocidad }} rpm</li>
+    <li>Producción mínima: {{ maquina.produccion_min }} u/min</li>
+</ul>
+{% endblock %}

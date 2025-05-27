@@ -1,0 +1,15 @@
+{% extends "base_admin.html" %}
+{% block title %}Detalle de Descargue{% endblock %}
+
+{% block content %}
+<h2>Detalles de Máquina de Descargue: {{ maquina.nombre }}</h2>
+<ul>
+    <li><strong>Ubicación:</strong> {{ maquina.ubicacion }}</li>
+    <li><strong>Temperatura Máxima:</strong> {{ maquina.temperatura_max }}°</li>
+    <li><strong>Temperatura Mínima:</strong> {{ maquina.temperatura_min }}°</li>
+    <li><strong>Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
+    <li><strong>Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
+    <li><strong>Velocidad de Descargue:</strong> {{ datos.velocidad_descargue }} u/min</li>
+</ul>
+<a href="{{ url_for('maquinas.lista_maquinas') }}">← Volver al listado</a>
+{% endblock %}

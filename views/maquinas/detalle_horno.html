@@ -1,0 +1,62 @@
+{% extends "base_admin.html" %}
+{% block title %}Detalle Horno{% endblock %}
+
+{% block content %}
+<h1>Detalle de Horno: {{ maquina.nombre }}</h1>
+
+<p><strong>Ubicación:</strong> {{ maquina.ubicacion or 0}}</p>
+<p><strong>Carros empujados diarios:</strong> {{ horno.carros_empujados_diarios or 0 }}</p>
+<p><strong>Tiempo entre empujes (min):</strong> {{ horno.tiempo_entre_empujes or 0}}</p>
+
+<hr>
+
+<h3>Comportamiento de la temperatura - Fecha: {{ fecha }}</h3>
+
+<form method="get">
+    <label for="fecha">Seleccionar Fecha:</label>
+    <input type="date" name="fecha" value="{{ fecha }}">
+    <button type="submit">Filtrar</button>
+</form>
+
+{% if temperaturas %}
+<canvas id="graficoTemperatura" height="100"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('graficoTemperatura').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [...Array(40).keys()].map(i => 'T' + (i + 1)),
+            datasets: [{
+                label: 'Temperatura (°C)',
+                data: {{ temperaturas | tojson }},
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: '°C'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Intervalos de Tiempo'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% else %}
+    <p>No hay registros de temperatura para esta fecha.</p>
+{% endif %}
+
+{% endblock %}

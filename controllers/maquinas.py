@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,  session, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash,  session, jsonify, abort
 from flask_login import login_required, current_user, login_user, logout_user
 from app import db, login_manager
 from models.maquinas import Maquina, Reporte, Moldeo, Apilado, Secador, Horno, Descargue, TemperaturaHorno
 
-from datetime import datetime
+from datetime import datetime,timedelta
 
 
 maquinas_bp = Blueprint("maquinas", __name__)
@@ -41,12 +41,62 @@ def nueva_maquina():
 
     return render_template('maquinas/nueva_maquina.html')
 
-@maquinas_bp.route('/maquina/<int:id>')
-@login_required
+@maquinas_bp.route('/<int:id>', methods=['GET'])
+#@login_required
 def ver_maquina(id):
+    
     maquina = Maquina.query.get_or_404(id)
-    reportes = Reporte.query.filter_by(id_maquina=id).order_by(Reporte.timestamp.desc()).limit(20).all()
-    return render_template('maquinas/ver_maquina.html', maquina=maquina, reportes=reportes)
+    tipo = maquina.tipo
+    
+    if tipo == "horno":
+        horno = Horno.query.filter_by(maquina_id=id).first()
+
+        print(f"Horno encontrado: {horno.id}")
+
+        fecha_str = request.args.get('fecha')
+        if fecha_str:
+            try:
+                fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+            except ValueError:
+                fecha = datetime.now().date()
+        else:
+            fecha = datetime.now().date()
+
+       # Trunca a la medianoche
+        inicio_dia = datetime.combine(fecha, datetime.min.time())
+        fin_dia = inicio_dia + timedelta(days=1)
+
+        temp_dia = TemperaturaHorno.query.filter(
+            TemperaturaHorno.horno_id == horno.id,
+            TemperaturaHorno.fecha >= inicio_dia,
+            TemperaturaHorno.fecha < fin_dia
+        ).first()     
+
+        temperaturas = []
+        if temp_dia:
+            temperaturas = [getattr(temp_dia, f"temperatura_{i}") for i in range(1, 41)]
+
+        return render_template('maquinas/detalle_horno.html',
+                               maquina=maquina,
+                               horno=horno,
+                               fecha=fecha.strftime('%Y-%m-%d'),
+                               temperaturas=temperaturas)
+
+    elif tipo == 'moldeo':
+        datos_especificos = Moldeo.query.filter_by(id_maquina=id).first()
+        return render_template('maquinas/detalle_moldeo.html', maquina=maquina, datos=datos_especificos)
+    elif tipo == 'secador':
+        datos_especificos = Secador.query.filter_by(id_maquina=id).first()
+        return render_template('maquinas/detalle_secador.html', maquina=maquina, datos=datos_especificos)
+    elif tipo == 'apilado':
+        datos_especificos = Apilado.query.filter_by(id_maquina=id).first()
+        return render_template('maquinas/detalle_apilado.html', maquina=maquina, datos=datos_especificos)
+    elif tipo == 'descargue':
+        datos_especificos = Descargue.query.filter_by(id_maquina=id).first()
+        return render_template('maquinas/detalle_descargue.html', maquina=maquina, datos=datos_especificos)
+    else:
+        print(f"Tipo de máquinass: {tipo}")
+        abort(404)
 
 # API PARA RECIBIR REPORTE
 @maquinas_bp.route('/api/reportes', methods=['POST'])
