@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,8 +18,10 @@
             font-family: 'Arial', sans-serif;
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Asegura que el contenido ocupe toda la pantalla */
-            overflow-x: hidden; /* Evita desplazamiento lateral */
+            min-height: 100vh;
+            /* Asegura que el contenido ocupe toda la pantalla */
+            overflow-x: hidden;
+            /* Evita desplazamiento lateral */
         }
 
         /* 🔹 Navbar */
@@ -31,12 +34,16 @@
 
         /* 🔹 Ajuste del nombre en la barra de navegación */
         .navbar-brand {
-            font-size: clamp(16px, 4vw, 22px); /* Tamaño adaptativo */
+            font-size: clamp(16px, 4vw, 22px);
+            /* Tamaño adaptativo */
             font-weight: bold;
-            white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+            white-space: nowrap;
+            /* Evita que el texto se divida en varias líneas */
             overflow: hidden;
-            text-overflow: ellipsis; /* Agrega "..." si es muy largo */
-            max-width: 80%; /* Limita el ancho para que no afecte los demás elementos */
+            text-overflow: ellipsis;
+            /* Agrega "..." si es muy largo */
+            max-width: 80%;
+            /* Limita el ancho para que no afecte los demás elementos */
         }
 
         /* 🔹 Ajuste en pantallas pequeñas */
@@ -54,7 +61,8 @@
             padding: 20px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
-            flex-grow: 1; /* Permite que el contenido crezca y empuje el footer hacia abajo */
+            flex-grow: 1;
+            /* Permite que el contenido crezca y empuje el footer hacia abajo */
         }
 
         /* 🔹 Footer siempre visible */
@@ -63,8 +71,25 @@
             color: white;
             text-align: center;
             padding: 15px;
-            margin-top: auto; /* Mantiene el footer en la parte inferior */
+            margin-top: auto;
+            /* Mantiene el footer en la parte inferior */
             width: 100%;
+        }
+
+        footer img {
+            max-height: 70px;
+            max-width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-img {
+                margin: 5px 0;
+            }
         }
 
         footer a {
@@ -78,6 +103,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
@@ -88,17 +114,18 @@
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/login' %}active{% endif %}" href="/login">Iniciar Sesión</a>
+                        <a class="nav-link {% if request.path == '/login' %}active{% endif %}" href="/login">Iniciar
+                            Sesión</a>
                     </li>
                 </ul>
-                
-            </div>
+
+            </div> -->
         </div>
     </nav>
 
@@ -108,14 +135,27 @@
     </div>
 
     <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 {{ datos.nombre if datos else 'Nombre del Conjunto'}}. Todos los derechos reservados.</p>
-        <p>Dirección: {{ datos.direccion if datos else 'Direccion del Conjunto'}} | Tel: +57 {{ datos.telefono if datos else 'telefono del Conjunto'}}</p>
-       
+    <footer class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="footer-img">
+            <img src="{{ url_for('static', filename='img/logo_izquierdo.png') }}" alt="Logo izquierdo" height="70">
+        </div>
+
+        <div class="text-center flex-grow-1">
+            
+            <p class="mb-0">Dirección: {{ datos.direccion if datos else 'Direccion del Conjunto'}} | Tel: +57 {{
+                datos.telefono if datos else 'telefono del Conjunto'}}</p>
+            <p class="mb-1">&copy; 2025 Desarrollado por: Autonika - S&S. Todos los derechos
+                reservados.</p>    
+        </div>
+
+        <div class="footer-img">
+            <img src="{{ url_for('static', filename='img/logo_derecho.jpeg') }}" alt="Logo derecho" height="70">
+        </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>

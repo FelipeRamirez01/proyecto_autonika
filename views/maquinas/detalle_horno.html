@@ -2,6 +2,10 @@
 {% block title %}Detalle Horno{% endblock %}
 
 {% block content %}
+
+<a href="{{ url_for('maquinas.listar_maquinas')}}" class="btn btn-primary mb-2">
+    Volver
+</a>
 <h1>Detalle de Horno: {{ maquina.nombre }}</h1>
 
 <p><strong>Ubicación:</strong> {{ maquina.ubicacion or 0}}</p>

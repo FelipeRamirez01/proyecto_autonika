@@ -94,7 +94,7 @@ def login():
                     if next_page:
                         return redirect(next_page)
                     elif user.id_rol == 1:
-                        return redirect(url_for('usuarios.home_admin'))
+                        return redirect(url_for('maquinas.listar_maquinas'))
                         
                     else:
                         return redirect(url_for('usuarios.home_usuario'))

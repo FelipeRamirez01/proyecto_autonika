@@ -8,7 +8,13 @@ from datetime import datetime,timedelta
 
 maquinas_bp = Blueprint("maquinas", __name__)
 
-@maquinas_bp.route('/')
+@maquinas_bp.route('')
+@login_required
+def listar_maquinas():
+    maquinas = Maquina.query.all()
+    return render_template('maquinas/listar_maquinas.html', maquinas=maquinas)
+
+@maquinas_bp.route('/gestion_maquinas')
 @login_required
 def index():
     maquinas = Maquina.query.all()
@@ -42,7 +48,7 @@ def nueva_maquina():
     return render_template('maquinas/nueva_maquina.html')
 
 @maquinas_bp.route('/<int:id>', methods=['GET'])
-#@login_required
+@login_required
 def ver_maquina(id):
     
     maquina = Maquina.query.get_or_404(id)
@@ -50,8 +56,6 @@ def ver_maquina(id):
     
     if tipo == "horno":
         horno = Horno.query.filter_by(maquina_id=id).first()
-
-        print(f"Horno encontrado: {horno.id}")
 
         fecha_str = request.args.get('fecha')
         if fecha_str:
