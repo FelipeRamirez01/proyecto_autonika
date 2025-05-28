@@ -18,7 +18,7 @@
 --
 -- Table structure for table `apilado`
 --
-use autonika;
+use railway;
 
 DROP TABLE IF EXISTS `apilado`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

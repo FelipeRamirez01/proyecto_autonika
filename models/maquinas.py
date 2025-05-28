@@ -1,6 +1,11 @@
 from app import db
 from datetime import datetime
 
+from zoneinfo import ZoneInfo
+
+zona_colombia = ZoneInfo("America/Bogota")
+fecha_colombia = datetime.now(zona_colombia).date()
+
 # Tabla principal
 class Maquina(db.Model):
     id = db.Column(db.Integer, primary_key=True)

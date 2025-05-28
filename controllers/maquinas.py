@@ -4,9 +4,12 @@ from app import db, login_manager
 from models.maquinas import Maquina, Reporte, Moldeo, Apilado, Secador, Horno, Descargue, TemperaturaHorno
 
 from datetime import datetime,timedelta
+from zoneinfo import ZoneInfo
 
 
 maquinas_bp = Blueprint("maquinas", __name__)
+
+zona_colombia = ZoneInfo("America/Bogota")
 
 @maquinas_bp.route('')
 @login_required
@@ -62,9 +65,9 @@ def ver_maquina(id):
             try:
                 fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
             except ValueError:
-                fecha = datetime.now().date()
+                fecha = datetime.now(tz=zona_colombia).date()
         else:
-            fecha = datetime.now().date()
+            fecha = datetime.now(tz=zona_colombia).date()
 
        # Trunca a la medianoche
         inicio_dia = datetime.combine(fecha, datetime.min.time())
