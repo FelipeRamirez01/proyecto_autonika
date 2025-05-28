@@ -90,14 +90,8 @@ def login():
                     session['role'] = user.rol.nombre
                     session.permanent = True
                     
-                    next_page = request.args.get('next')
-                    if next_page:
-                        return redirect(next_page)
-                    elif user.id_rol == 1:
-                        return redirect(url_for('maquinas.listar_maquinas'))
+                    return redirect(url_for('maquinas.listar_maquinas'))
                         
-                    else:
-                        return redirect(url_for('usuarios.home_usuario'))
 
                 # Si falla la contraseña normal, intentamos con código temporal
                 elif user.codigo_temporal and check_password_hash(user.codigo_temporal, password):
