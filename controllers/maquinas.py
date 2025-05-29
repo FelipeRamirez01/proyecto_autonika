@@ -90,16 +90,16 @@ def ver_maquina(id):
                                temperaturas=temperaturas)
 
     elif tipo == 'moldeo':
-        datos_especificos = Moldeo.query.filter_by(id_maquina=id).first()
+        datos_especificos = Moldeo.query.filter_by(maquina_id=id).first()
         return render_template('maquinas/detalle_moldeo.html', maquina=maquina, datos=datos_especificos)
     elif tipo == 'secador':
-        datos_especificos = Secador.query.filter_by(id_maquina=id).first()
+        datos_especificos = Secador.query.filter_by(maquina_id=id).first()
         return render_template('maquinas/detalle_secador.html', maquina=maquina, datos=datos_especificos)
     elif tipo == 'apilado':
-        datos_especificos = Apilado.query.filter_by(id_maquina=id).first()
+        datos_especificos = Apilado.query.filter_by(maquina_id=id).first()
         return render_template('maquinas/detalle_apilado.html', maquina=maquina, datos=datos_especificos)
     elif tipo == 'descargue':
-        datos_especificos = Descargue.query.filter_by(id_maquina=id).first()
+        datos_especificos = Descargue.query.filter_by(maquina_id=id).first()
         return render_template('maquinas/detalle_descargue.html', maquina=maquina, datos=datos_especificos)
     else:
         print(f"Tipo de máquinass: {tipo}")

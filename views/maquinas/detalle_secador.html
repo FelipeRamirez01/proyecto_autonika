@@ -2,14 +2,129 @@
 {% block title %}Detalle de Secador{% endblock %}
 
 {% block content %}
-<h2>Detalles de Máquina Secadora: {{ maquina.nombre }}</h2>
-<ul>
-    <li><strong>Ubicación:</strong> {{ maquina.ubicacion }}</li>
-    <li><strong>Temperatura Máxima:</strong> {{ maquina.temperatura_max }}°</li>
-    <li><strong>Temperatura Mínima:</strong> {{ maquina.temperatura_min }}°</li>
-    <li><strong>Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
-    <li><strong>Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
-    <li><strong>Tiempo de Secado:</strong> {{ datos.tiempo_secado }} minutos</li>
-</ul>
-<a href="{{ url_for('maquinas.lista_maquinas') }}">← Volver al listado</a>
+<div class="container py-4">
+    <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-outline-primary mb-3">
+        ← Volver al listado
+    </a>
+
+    <div class="bg-white shadow rounded-lg p-4 mb-4">
+        <h2 class="text-center fw-bold mb-4 text-primary-emphasis">🧱 Secador: {{ maquina.nombre }}</h2>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold text-secondary">📊 Parámetros Técnicos</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</li>
+                            <li class="list-group-item"><strong>🌡️ Temp. Máxima:</strong> {{ maquina.temperatura_max }} °C</li>
+                            <li class="list-group-item"><strong>🌡️ Temp. Mínima:</strong> {{ maquina.temperatura_min }} °C</li>
+                            <li class="list-group-item"><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
+                            <li class="list-group-item"><strong>🏭 Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold text-secondary">📈 Rendimiento Operativo</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>⏱️ Tiempo de Secado:</strong> {{ datos.tiempo_secado }} min</li>
+                            <li class="list-group-item"><strong>⛓️ Descargue Bajo Meta:</strong> {{ datos.descargue_bajometa_tiempo }} min</li>
+                            <li class="list-group-item"><strong>📦 Carga Bajonetas:</strong> {{ datos.tiempo_carga_bajonetas }} min</li>
+                            <li class="list-group-item"><strong>🦾 Brazo Descargue:</strong> {{ 'Sí' if datos.funcionamiento_brazo_descargue else 'No' }}</li>
+                            <li class="list-group-item"><strong>🦿 Brazo Cargue:</strong> {{ 'Sí' if datos.funcionamiento_brazo_cargue else 'No' }}</li>
+                            <li class="list-group-item"><strong>🔥 Temp. Actual:</strong> {{ datos.temperatura_secador }} °C</li>
+                            <li class="list-group-item"><strong>📥 Bajonetas Ingresadas:</strong> {{ datos.bajonetas_ingresadas }}</li>
+                            <li class="list-group-item"><strong>📤 Bajonetas Salidas:</strong> {{ datos.bajonetas_salidas }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtro de fechas -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold">📅 Filtrar por Rango de Fechas</h5>
+            <form method="GET" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="fecha_inicio" class="form-label">Fecha inicio</label>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" value="{{ request.args.get('fecha_inicio', '') }}">
+                </div>
+                <div class="col-md-4">
+                    <label for="fecha_fin" class="form-label">Fecha fin</label>
+                    <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" value="{{ request.args.get('fecha_fin', '') }}">
+                </div>
+                <div class="col-md-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gráfico -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title text-center fw-bold text-success">📈 Evolución de la Temperatura del Secador</h5>
+            <canvas id="graficoTemperaturaSecador" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Script de Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('graficoTemperaturaSecador').getContext('2d');
+    const grafico = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [
+                {% for registro in historial %}
+                    "{{ registro.fecha.strftime('%d-%m-%Y') }}",
+                {% endfor %}
+            ],
+            datasets: [{
+                label: 'Temperatura del Secador (°C)',
+                data: [
+                    {% for registro in historial %}
+                        {{ registro.temperatura_secador }},
+                    {% endfor %}
+                ],
+                backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                borderColor: 'rgba(40, 167, 69, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'Temperatura (°C)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Fecha'
+                    }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

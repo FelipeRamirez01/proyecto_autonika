@@ -2,45 +2,78 @@
 {% block title %}Detalle Horno{% endblock %}
 
 {% block content %}
+<div class="container py-4">
+    <a href="{{ url_for('maquinas.listar_maquinas')}}" class="btn btn-outline-primary mb-4">
+        ← Volver al listado
+    </a>
 
-<a href="{{ url_for('maquinas.listar_maquinas')}}" class="btn btn-primary mb-2">
-    Volver
-</a>
-<h1>Detalle de Horno: {{ maquina.nombre }}</h1>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h2 class="card-title fw-bold text-center mb-3">🔥 Detalle de Horno: {{ maquina.nombre }}</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion or 'Sin ubicación' }}</li>
+                        <li class="list-group-item"><strong>🚛 Carros empujados diarios:</strong> {{ horno.carros_empujados_diarios or 0 }}</li>
+                        <li class="list-group-item"><strong>⏱️ Tiempo entre empujes:</strong> {{ horno.tiempo_entre_empujes or 0 }} min</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p><strong>Ubicación:</strong> {{ maquina.ubicacion or 0}}</p>
-<p><strong>Carros empujados diarios:</strong> {{ horno.carros_empujados_diarios or 0 }}</p>
-<p><strong>Tiempo entre empujes (min):</strong> {{ horno.tiempo_entre_empujes or 0}}</p>
+    <!-- Filtro de Fecha -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4 class="card-title text-center mb-3">📊 Comportamiento de la Temperatura</h4>
+            <form method="get" class="row g-3 justify-content-center mb-3">
+                <div class="col-md-4">
+                    <label for="fecha" class="form-label">Seleccionar Fecha</label>
+                    <input type="date" id="fecha" name="fecha" class="form-control" value="{{ fecha }}">
+                </div>
+                <div class="col-md-2 align-self-end">
+                    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+                </div>
+            </form>
 
-<hr>
+            {% if temperaturas %}
+                <canvas id="graficoTemperatura" height="100"></canvas>
+            {% else %}
+                <div class="alert alert-warning text-center" role="alert">
+                    No hay registros de temperatura para esta fecha.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
-<h3>Comportamiento de la temperatura - Fecha: {{ fecha }}</h3>
-
-<form method="get">
-    <label for="fecha">Seleccionar Fecha:</label>
-    <input type="date" name="fecha" value="{{ fecha }}">
-    <button type="submit">Filtrar</button>
-</form>
-
-{% if temperaturas %}
-<canvas id="graficoTemperatura" height="100"></canvas>
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    {% if temperaturas %}
     const ctx = document.getElementById('graficoTemperatura').getContext('2d');
-    const chart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'line',
         data: {
             labels: [...Array(40).keys()].map(i => 'T' + (i + 1)),
             datasets: [{
                 label: 'Temperatura (°C)',
                 data: {{ temperaturas | tojson }},
-                fill: false,
+                fill: true,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
-                tension: 0.1
+                tension: 0.2,
+                pointRadius: 3,
+                pointHoverRadius: 6
             }]
         },
         options: {
             responsive: true,
+            plugins: {
+                legend: { display: true },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            interaction: { mode: 'nearest', axis: 'x', intersect: false },
             scales: {
                 y: {
                     beginAtZero: false,
@@ -58,9 +91,6 @@
             }
         }
     });
+    {% endif %}
 </script>
-{% else %}
-    <p>No hay registros de temperatura para esta fecha.</p>
-{% endif %}
-
 {% endblock %}

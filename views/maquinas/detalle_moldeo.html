@@ -1,11 +1,99 @@
 {% extends "base_admin.html" %}
 {% block title %}Detalle de Moldeo{% endblock %}
+
 {% block content %}
-<h2>Detalles de Máquina de Moldeo: {{ maquina.nombre }}</h2>
-<ul>
-    <li>Ubicación: {{ maquina.ubicacion }}</li>
-    <li>Presión de moldeo: {{ datos.presion_moldeo }} psi</li>
-    <li>Velocidad: {{ maquina.velocidad }} rpm</li>
-    <li>Producción mínima: {{ maquina.produccion_min }} u/min</li>
-</ul>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-outline-primary">
+            ← Volver al listado
+        </a>
+        <h2 class="fw-bold text-center flex-grow-1">🧩 Detalles de Máquina de Moldeo: {{ maquina.nombre }}</h2>
+    </div>
+
+    <div class="row g-4">
+        <!-- Detalles de la máquina -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border border-dark h-100">
+                <div class="card-header bg-dark text-white fw-bold">
+                    Información de la Máquina
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</li>
+                        <li class="list-group-item"><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
+                        <li class="list-group-item"><strong>🏭 Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
+                        <li class="list-group-item"><strong>🧪 Presión de Moldeo:</strong> {{ datos.presion_moldeo }} psi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles del proceso de moldeo -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border border-success h-100">
+                <div class="card-header bg-success text-white fw-bold">
+                    Parámetros del Proceso de Moldeo
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>🌀 Cortes por minuto:</strong> {{ datos.cortes_por_minuto }}</li>
+                        <li class="list-group-item"><strong>📦 Vel. cajones:</strong> {{ datos.velocidad_cajones }} m/min</li>
+                        <li class="list-group-item"><strong>🐍 Vel. extrusora:</strong> {{ datos.velocidad_extrusora }} m/min</li>
+                        <li class="list-group-item"><strong>⏱️ Tiempo de parada:</strong> {{ datos.tiempo_parada }} min</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico -->
+    <div class="card mt-5 shadow-sm">
+        <div class="card-body">
+            <h4 class="text-center fw-bold">📈 Rendimiento - Cortes por minuto</h4>
+            <canvas id="graficoMoldeo" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('graficoMoldeo').getContext('2d');
+    const grafico = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Cortes/min'],
+            datasets: [{
+                label: 'Cortes por minuto',
+                data: [{{ datos.cortes_por_minuto }}],
+                backgroundColor: 'rgba(25, 135, 84, 0.6)',
+                borderColor: 'rgba(25, 135, 84, 1)',
+                borderWidth: 2,
+                borderRadius: 10
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 10 },
+                    title: {
+                        display: true,
+                        text: 'Cortes por minuto'
+                    }
+                },
+                x: {
+                    title: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
