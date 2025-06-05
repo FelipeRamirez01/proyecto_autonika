@@ -2,14 +2,106 @@
 {% block title %}Detalle de Descargue{% endblock %}
 
 {% block content %}
-<h2>Detalles de Máquina de Descargue: {{ maquina.nombre }}</h2>
-<ul>
-    <li><strong>Ubicación:</strong> {{ maquina.ubicacion }}</li>
-    <li><strong>Temperatura Máxima:</strong> {{ maquina.temperatura_max }}°</li>
-    <li><strong>Temperatura Mínima:</strong> {{ maquina.temperatura_min }}°</li>
-    <li><strong>Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
-    <li><strong>Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
-    <li><strong>Velocidad de Descargue:</strong> {{ datos.velocidad_descargue }} u/min</li>
-</ul>
-<a href="{{ url_for('maquinas.lista_maquinas') }}">← Volver al listado</a>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-outline-primary">
+            ← Volver al listado
+        </a>
+        <h2 class="fw-bold text-center flex-grow-1">🚚 Detalles de Máquina de Descargue: {{ maquina.nombre }}</h2>
+    </div>
+
+    <div class="card shadow-sm border border-primary">
+        <div class="card-header bg-primary text-white fw-bold">
+            Información de la Máquina de Descargue ({{ fecha_seleccionada.strftime('%d-%m-%Y') if fecha_seleccionada
+            else 'Sin Fecha' }})
+        </div>
+        <div class="card-body">
+            {% if datos %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</li>
+                <li class="list-group-item"><strong>🌡️ Temperatura Máxima:</strong> {{ maquina.temperatura_max }}°</li>
+                <li class="list-group-item"><strong>🌡️ Temperatura Mínima:</strong> {{ maquina.temperatura_min }}°</li>
+                <li class="list-group-item"><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
+                <li class="list-group-item"><strong>🏭 Producción mínima:</strong> {{ maquina.produccion_min }} u/min
+                </li>
+                <li class="list-group-item"><strong>🚛 Carros Descargados:</strong> {{ datos.carros_descargados }}</li>
+                <li class="list-group-item"><strong>📦 Paquetes Formados:</strong> {{ datos.paquetes_formados }}</li>
+            </ul>
+            {% else %}
+            <div class="alert alert-warning mt-3">
+                No hay datos disponibles para la fecha seleccionada.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Filtro de fechas -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold">📅 Filtrar por Rango de Fechas</h5>
+            <form method="GET" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="fecha_inicio" class="form-label">Fecha inicio</label>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
+                        value="{{ request.args.get('fecha_inicio', '') }}">
+                </div>
+                <div class="col-md-4">
+                    <label for="fecha_fin" class="form-label">Fecha fin</label>
+                    <input type="date" id="fecha_fin" name="fecha_fin" class="form-control"
+                        value="{{ request.args.get('fecha_fin', '') }}">
+                </div>
+                <div class="col-md-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if datos %}
+    <div class="mt-5">
+        <h4 class="text-center">📊 Indicadores de Descargue</h4>
+        <canvas id="graficoDescargue" height="100"></canvas>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center" role="alert">
+        No hay registros para esta fecha.
+    </div>
+    {% endif %}
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% if datos %}
+<script>
+    const ctx = document.getElementById('graficoDescargue').getContext('2d');
+    const grafico = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Carros Descargados', 'Paquetes Formados'],
+            datasets: [{
+                label: 'Cantidad',
+                data: [
+                    {{ datos.carros_descargados }},
+            {{ datos.paquetes_formados }}
+                ],
+    backgroundColor: ['#0d6efd', '#198754'],
+        borderColor: ['#0a58ca', '#146c43'],
+            borderWidth: 2,
+                borderRadius: 10
+            }]
+        },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                    ticks: { stepSize: 1 }
+            }
+        },
+        plugins: {
+            legend: { display: false }
+        }
+    }
+    });
+</script>
+{% endif %}
 {% endblock %}

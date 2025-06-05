@@ -40,12 +40,14 @@ class Moldeo(db.Model):
     velocidad_cajones = db.Column(db.Float)
     velocidad_extrusora = db.Column(db.Float)
     tiempo_parada = db.Column(db.Float)
+    fecha = db.Column(db.Date) 
 
 class Apilado(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     maquina_id = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
     mesas_endagadas = db.Column(db.Integer)
     tiempo_ultima_mesa = db.Column(db.Float)
+    fecha = db.Column(db.Date) 
 
 class Secador(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -57,12 +59,14 @@ class Secador(db.Model):
     temperatura_secador = db.Column(db.Float)
     bajonetas_ingresadas = db.Column(db.Integer)
     bajonetas_salidas = db.Column(db.Integer)
+    fecha = db.Column(db.Date) 
 
 class Horno(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     maquina_id = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
     carros_empujados_diarios = db.Column(db.Integer)
     tiempo_entre_empujes = db.Column(db.Float)
+    fecha = db.Column(db.Date) 
 
 class TemperaturaHorno(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -114,6 +118,7 @@ class Descargue(db.Model):
     maquina_id = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
     carros_descargados = db.Column(db.Integer)
     paquetes_formados = db.Column(db.Integer)
+    fecha = db.Column(db.Date) 
 
 
 

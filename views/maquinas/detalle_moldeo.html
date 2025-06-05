@@ -7,51 +7,32 @@
         <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-outline-primary">
             ← Volver al listado
         </a>
-        <h2 class="fw-bold text-center flex-grow-1">🧩 Detalles de Máquina de Moldeo: {{ maquina.nombre }}</h2>
+        <h2 class="fw-bold text-center flex-grow-1">🧱 Detalles de Máquina de Moldeo: {{ maquina.nombre }}</h2>
     </div>
 
-    <div class="row g-4">
-        <!-- Detalles de la máquina -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border border-dark h-100">
-                <div class="card-header bg-dark text-white fw-bold">
-                    Información de la Máquina
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</li>
-                        <li class="list-group-item"><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
-                        <li class="list-group-item"><strong>🏭 Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
-                        <li class="list-group-item"><strong>🧪 Presión de Moldeo:</strong> {{ datos.presion_moldeo }} psi</li>
-                    </ul>
-                </div>
-            </div>
+    <div class="card shadow-sm border border-primary">
+        <div class="card-header bg-primary text-white fw-bold">
+            Información de la Máquina de Moldeo
         </div>
-
-        <!-- Detalles del proceso de moldeo -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border border-success h-100">
-                <div class="card-header bg-success text-white fw-bold">
-                    Parámetros del Proceso de Moldeo
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>🌀 Cortes por minuto:</strong> {{ datos.cortes_por_minuto }}</li>
-                        <li class="list-group-item"><strong>📦 Vel. cajones:</strong> {{ datos.velocidad_cajones }} m/min</li>
-                        <li class="list-group-item"><strong>🐍 Vel. extrusora:</strong> {{ datos.velocidad_extrusora }} m/min</li>
-                        <li class="list-group-item"><strong>⏱️ Tiempo de parada:</strong> {{ datos.tiempo_parada }} min</li>
-                    </ul>
-                </div>
-            </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</li>
+                <li class="list-group-item"><strong>🌡️ Temperatura Máxima:</strong> {{ maquina.temperatura_max }}°</li>
+                <li class="list-group-item"><strong>🌡️ Temperatura Mínima:</strong> {{ maquina.temperatura_min }}°</li>
+                <li class="list-group-item"><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
+                <li class="list-group-item"><strong>🏭 Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
+                <li class="list-group-item"><strong>✂️ Cortes por Minuto:</strong> {{ datos.cortes_por_minuto }}</li>
+                <li class="list-group-item"><strong>📦 Velocidad de Cajones:</strong> {{ datos.velocidad_cajones }} m/min</li>
+                <li class="list-group-item"><strong>🚀 Velocidad de Extrusora:</strong> {{ datos.velocidad_extrusora }} rpm</li>
+                <li class="list-group-item"><strong>⏱️ Tiempo de Parada:</strong> {{ datos.tiempo_parada }} min</li>
+            </ul>
         </div>
     </div>
 
     <!-- Gráfico -->
-    <div class="card mt-5 shadow-sm">
-        <div class="card-body">
-            <h4 class="text-center fw-bold">📈 Rendimiento - Cortes por minuto</h4>
-            <canvas id="graficoMoldeo" height="100"></canvas>
-        </div>
+    <div class="mt-5">
+        <h4 class="text-center">📊 Indicadores de Producción</h4>
+        <canvas id="graficoMoldeo" height="100"></canvas>
     </div>
 </div>
 
@@ -62,12 +43,27 @@
     const grafico = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Cortes/min'],
+            labels: ['Cortes/min', 'Vel. Cajones', 'Vel. Extrusora', 'Tiempo Parada'],
             datasets: [{
-                label: 'Cortes por minuto',
-                data: [{{ datos.cortes_por_minuto }}],
-                backgroundColor: 'rgba(25, 135, 84, 0.6)',
-                borderColor: 'rgba(25, 135, 84, 1)',
+                label: 'Valores',
+                data: [
+                    {{ datos.cortes_por_minuto }},
+                    {{ datos.velocidad_cajones }},
+                    {{ datos.velocidad_extrusora }},
+                    {{ datos.tiempo_parada }}
+                ],
+                backgroundColor: [
+                    'rgba(0, 123, 255, 0.6)',
+                    'rgba(40, 167, 69, 0.6)',
+                    'rgba(255, 193, 7, 0.6)',
+                    'rgba(220, 53, 69, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(0, 123, 255, 1)',
+                    'rgba(40, 167, 69, 1)',
+                    'rgba(255, 193, 7, 1)',
+                    'rgba(220, 53, 69, 1)'
+                ],
                 borderWidth: 2,
                 borderRadius: 10
             }]
@@ -76,16 +72,7 @@
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: { stepSize: 10 },
-                    title: {
-                        display: true,
-                        text: 'Cortes por minuto'
-                    }
-                },
-                x: {
-                    title: {
-                        display: false
-                    }
+                    ticks: { stepSize: 5 }
                 }
             },
             plugins: {

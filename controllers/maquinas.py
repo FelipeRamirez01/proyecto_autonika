@@ -3,7 +3,7 @@ from flask_login import login_required, current_user, login_user, logout_user
 from app import db, login_manager
 from models.maquinas import Maquina, Reporte, Moldeo, Apilado, Secador, Horno, Descargue, TemperaturaHorno
 
-from datetime import datetime,timedelta
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 
@@ -93,14 +93,56 @@ def ver_maquina(id):
         datos_especificos = Moldeo.query.filter_by(maquina_id=id).first()
         return render_template('maquinas/detalle_moldeo.html', maquina=maquina, datos=datos_especificos)
     elif tipo == 'secador':
-        datos_especificos = Secador.query.filter_by(maquina_id=id).first()
-        return render_template('maquinas/detalle_secador.html', maquina=maquina, datos=datos_especificos)
+        maquina = Maquina.query.get_or_404(id)
+        datos = Secador.query.filter_by(maquina_id=maquina.id).order_by(Secador.id.desc()).first()
+
+        # Obtener fechas desde el query string
+        fecha_inicio = request.args.get('fecha_inicio')
+        fecha_fin = request.args.get('fecha_fin')
+
+        # Filtro base
+        query = Secador.query.filter_by(maquina_id=maquina.id)
+
+        if fecha_inicio:
+            fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+            query = query.filter(Secador.fecha >= fecha_inicio)
+
+        if fecha_fin:
+            fecha_fin = datetime.strptime(fecha_fin, "%Y-%m-%d").date()
+            query = query.filter(Secador.fecha <= fecha_fin)
+
+        historial = query.order_by(Secador.fecha.asc()).all()
+
+        return render_template('maquinas/detalle_secador.html', maquina=maquina, datos=datos, historial=historial)
     elif tipo == 'apilado':
         datos_especificos = Apilado.query.filter_by(maquina_id=id).first()
         return render_template('maquinas/detalle_apilado.html', maquina=maquina, datos=datos_especificos)
     elif tipo == 'descargue':
-        datos_especificos = Descargue.query.filter_by(maquina_id=id).first()
-        return render_template('maquinas/detalle_descargue.html', maquina=maquina, datos=datos_especificos)
+        maquina = Maquina.query.get_or_404(id)
+
+
+
+        datos = Descargue.query.filter_by(maquina_id=maquina.id).order_by(Descargue.id.desc()).first()
+
+        # Obtener fechas desde el query string
+        fecha_inicio = request.args.get('fecha_inicio')
+        fecha_fin = request.args.get('fecha_fin')
+
+        # Filtro base
+        query = Descargue.query.filter_by(maquina_id=maquina.id)
+
+        if fecha_inicio:
+            fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+            query = query.filter(Descargue.fecha >= fecha_inicio)
+
+        if fecha_fin:
+            fecha_fin = datetime.strptime(fecha_fin, "%Y-%m-%d").date()
+            query = query.filter(Descargue.fecha <= fecha_fin)
+
+        historial = query.order_by(Descargue.fecha.asc()).all()
+
+        return render_template(
+            "maquinas/detalle_descargue.html",maquina=maquina, datos=datos, historial=historial)
     else:
         print(f"Tipo de máquinass: {tipo}")
         abort(404)
