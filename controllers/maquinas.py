@@ -122,6 +122,7 @@ def ver_maquina(id):
 
 
 
+
         datos = Descargue.query.filter_by(maquina_id=maquina.id).order_by(Descargue.id.desc()).first()
 
         # Obtener fechas desde el query string
