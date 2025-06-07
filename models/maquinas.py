@@ -17,7 +17,6 @@ class Maquina(db.Model):
     secador = db.relationship("Secador", uselist=False, backref="maquina")
     horno = db.relationship("Horno", uselist=False, backref="maquina")
     descargue = db.relationship("Descargue", uselist=False, backref="maquina")
-    reportes = db.relationship('Reporte', backref='maquina', lazy=True)
 
 
 class Moldeo(db.Model):
