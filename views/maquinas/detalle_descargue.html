@@ -18,14 +18,11 @@
         <div class="card-body">
             {% if datos %}
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</li>
-                <li class="list-group-item"><strong>🌡️ Temperatura Máxima:</strong> {{ maquina.temperatura_max }}°</li>
-                <li class="list-group-item"><strong>🌡️ Temperatura Mínima:</strong> {{ maquina.temperatura_min }}°</li>
-                <li class="list-group-item"><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
-                <li class="list-group-item"><strong>🏭 Producción mínima:</strong> {{ maquina.produccion_min }} u/min
-                </li>
-                <li class="list-group-item"><strong>🚛 Carros Descargados:</strong> {{ datos.carros_descargados }}</li>
-                <li class="list-group-item"><strong>📦 Paquetes Formados:</strong> {{ datos.paquetes_formados }}</li>
+                <li class="list-group-item"><strong>📍 Carros Descargados:</strong> {{ maquina.carros_descargados}}</li>
+                <li class="list-group-item"><strong>🌡️ Tiempo Ultimo Carro:</strong> {{ maquina.tiempo_ultimo_carro }}</li>
+                <li class="list-group-item"><strong>🌡️ Eficiencia de Produccion:</strong> {{ maquina.efi_produccion }}</li>
+                <li class="list-group-item"><strong>⚙️ Paquetes Realizados:</strong> {{ maquina.paquetes_realizados }}</li>
+               
             </ul>
             {% else %}
             <div class="alert alert-warning mt-3">
@@ -82,7 +79,7 @@
                 label: 'Cantidad',
                 data: [
                     {{ datos.carros_descargados }},
-            {{ datos.paquetes_formados }}
+            {{ datos.paquetes_realizados }}
                 ],
     backgroundColor: ['#0d6efd', '#198754'],
         borderColor: ['#0a58ca', '#146c43'],

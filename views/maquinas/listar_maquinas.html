@@ -54,10 +54,10 @@
                         <div class="card h-100 shadow-sm border border-dark" style="background-color: rgba(255, 255, 255, 0.85); color: #0e0e0e;">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title fw-bold">{{ maquina.nombre }}</h5>
-                                <h6 class="card-subtitle mb-2 text-dark">📍 {{ maquina.ubicacion }}</h6>
+                                
                                 <ul class="list-group list-group-flush my-3">
                                     <li class="list-group-item bg-transparent text-dark">
-                                        🌡️ Estado: <strong>{{ maquina.temperatura_max }} °C</strong>
+                                        🌡️ Estado: <strong>{{ maquina.estado }} °C</strong>
                                     </li>
                                 </ul>
                                 <a href="{{ url_for('maquinas.ver_maquina', id=maquina.id) }}" class="btn btn-outline-dark mt-auto w-100">

@@ -13,9 +13,10 @@
             <div class="row">
                 <div class="col-md-6">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion or 'Sin ubicación' }}</li>
-                        <li class="list-group-item"><strong>🚛 Carros empujados diarios:</strong> {{ horno.carros_empujados_diarios or 0 }}</li>
-                        <li class="list-group-item"><strong>⏱️ Tiempo entre empujes:</strong> {{ horno.tiempo_entre_empujes or 0 }} min</li>
+                        <li class="list-group-item"><strong>📍 Empujes Realizados:</strong> {{ maquina.empujes_realizados or 0 }}</li>
+                        <li class="list-group-item"><strong>🚛 Carros Quemados:</strong> {{ horno.carros_quemados or 0 }}</li>
+                        <li class="list-group-item"><strong>⏱️ Velocidad Tiro:</strong> {{ horno.velocidad_tiro or 0 }} min</li>
+                        <li class="list-group-item"><strong>⏱️ Temperatura Tiro:</strong> {{ horno.temperatura_tiro or 0 }} min</li>
                     </ul>
                 </div>
             </div>

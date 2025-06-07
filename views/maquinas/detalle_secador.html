@@ -15,32 +15,15 @@
                     <div class="card-body">
                         <h5 class="card-title fw-semibold text-secondary">📊 Parámetros Técnicos</h5>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</li>
-                            <li class="list-group-item"><strong>🌡️ Temp. Máxima:</strong> {{ maquina.temperatura_max }} °C</li>
-                            <li class="list-group-item"><strong>🌡️ Temp. Mínima:</strong> {{ maquina.temperatura_min }} °C</li>
-                            <li class="list-group-item"><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
-                            <li class="list-group-item"><strong>🏭 Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
+                            <li class="list-group-item"><strong>📍 Estantes Cargados:</strong> {{ maquina.estantes_cargados }}</li>
+                            <li class="list-group-item"><strong>🌡️ Tiempo Ultimo Estante:</strong> {{ maquina.tiempo_ultimo_estante }} min</li>
+                            <li class="list-group-item"><strong>🌡️ Eficiencia de Produccion:</strong> {{ maquina.efi_producion }} </li>
+                            <li class="list-group-item"><strong>⚙️ Cortes Por Minuto:</strong> {{ maquina.cortes_por_min }} u/min</li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-semibold text-secondary">📈 Rendimiento Operativo</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>⏱️ Tiempo de Secado:</strong> {{ datos.tiempo_secado }} min</li>
-                            <li class="list-group-item"><strong>⛓️ Descargue Bajo Meta:</strong> {{ datos.descargue_bajometa_tiempo }} min</li>
-                            <li class="list-group-item"><strong>📦 Carga Bajonetas:</strong> {{ datos.tiempo_carga_bajonetas }} min</li>
-                            <li class="list-group-item"><strong>🦾 Brazo Descargue:</strong> {{ 'Sí' if datos.funcionamiento_brazo_descargue else 'No' }}</li>
-                            <li class="list-group-item"><strong>🦿 Brazo Cargue:</strong> {{ 'Sí' if datos.funcionamiento_brazo_cargue else 'No' }}</li>
-                            <li class="list-group-item"><strong>🔥 Temp. Actual:</strong> {{ datos.temperatura_secador }} °C</li>
-                            <li class="list-group-item"><strong>📥 Bajonetas Ingresadas:</strong> {{ datos.bajonetas_ingresadas }}</li>
-                            <li class="list-group-item"><strong>📤 Bajonetas Salidas:</strong> {{ datos.bajonetas_salidas }}</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 

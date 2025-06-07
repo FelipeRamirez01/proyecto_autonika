@@ -16,15 +16,10 @@
         </div>
         <div class="card-body">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</li>
-                <li class="list-group-item"><strong>🌡️ Temperatura Máxima:</strong> {{ maquina.temperatura_max }}°</li>
-                <li class="list-group-item"><strong>🌡️ Temperatura Mínima:</strong> {{ maquina.temperatura_min }}°</li>
-                <li class="list-group-item"><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
-                <li class="list-group-item"><strong>🏭 Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
                 <li class="list-group-item"><strong>✂️ Cortes por Minuto:</strong> {{ datos.cortes_por_minuto }}</li>
                 <li class="list-group-item"><strong>📦 Velocidad de Cajones:</strong> {{ datos.velocidad_cajones }} m/min</li>
-                <li class="list-group-item"><strong>🚀 Velocidad de Extrusora:</strong> {{ datos.velocidad_extrusora }} rpm</li>
-                <li class="list-group-item"><strong>⏱️ Tiempo de Parada:</strong> {{ datos.tiempo_parada }} min</li>
+                <li class="list-group-item"><strong>🚀 Velocidad Formadora:</strong> {{ datos.velocidad_formadora }} rpm</li>
+                <li class="list-group-item"><strong>🏭 Nivel Cajon:</strong> {{ maquina.nivel_cajon }} </li>
             </ul>
         </div>
     </div>

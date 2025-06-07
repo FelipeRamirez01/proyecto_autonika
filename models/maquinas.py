@@ -10,11 +10,6 @@ fecha_colombia = datetime.now(zona_colombia).date()
 class Maquina(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
-    ubicacion = db.Column(db.String(100), nullable=False)
-    temperatura_max = db.Column(db.Float)
-    temperatura_min = db.Column(db.Float)
-    velocidad = db.Column(db.Float)
-    produccion_min = db.Column(db.Integer)
     tipo = db.Column(db.String(50), nullable=False)
 
     moldeo = db.relationship("Moldeo", uselist=False, backref="maquina")
@@ -24,49 +19,46 @@ class Maquina(db.Model):
     descargue = db.relationship("Descargue", uselist=False, backref="maquina")
     reportes = db.relationship('Reporte', backref='maquina', lazy=True)
 
-class Reporte(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    id_maquina = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.now)
-    temperatura = db.Column(db.Float, nullable=False)
-    velocidad = db.Column(db.Float, nullable=False)
-    produccion = db.Column(db.Float, nullable=False)
-
 
 class Moldeo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     maquina_id = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
     cortes_por_minuto = db.Column(db.Integer)
     velocidad_cajones = db.Column(db.Float)
-    velocidad_extrusora = db.Column(db.Float)
-    tiempo_parada = db.Column(db.Float)
+    velocidad_formadora = db.Column(db.Float)
+    nivel_cajon = db.Column(db.Float)
     fecha = db.Column(db.Date) 
+    estado = db.Column(db.String(50))  # Estado de la máquina (operativa, en mantenimiento, etc.)
 
 class Apilado(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     maquina_id = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
-    mesas_endagadas = db.Column(db.Integer)
-    tiempo_ultima_mesa = db.Column(db.Float)
+    estantes_descargados = db.Column(db.Float)
+    tiempo_ultimo_estante = db.Column(db.Float)
+    efi_produccion = db.Column(db.Float)
+    carros_cargados = db.Column(db.Float)
     fecha = db.Column(db.Date) 
+    estado = db.Column(db.String(50))  # Estado de la máquina (operativa, en mantenimiento, etc.)
 
 class Secador(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     maquina_id = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
-    descargue_bajometa_tiempo = db.Column(db.Float)
-    tiempo_carga_bajonetas = db.Column(db.Float)
-    funcionamiento_brazo_descargue = db.Column(db.Boolean)
-    funcionamiento_brazo_cargue = db.Column(db.Boolean)
-    temperatura_secador = db.Column(db.Float)
-    bajonetas_ingresadas = db.Column(db.Integer)
-    bajonetas_salidas = db.Column(db.Integer)
+    estantes_cargados = db.Column(db.Integer) 
+    tiempo_ultimo_estante = db.Column(db.Float)
+    efi_produccion = db.Column(db.Float)
+    cortes_por_minuto = db.Column(db.float)       
     fecha = db.Column(db.Date) 
+    estado = db.Column(db.String(50))  # Estado de la máquina (operativa, en mantenimiento, etc.)
 
 class Horno(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     maquina_id = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
-    carros_empujados_diarios = db.Column(db.Integer)
-    tiempo_entre_empujes = db.Column(db.Float)
+    empujes_realizados = db.Column(db.Integer)
+    carros_quemados = db.Column(db.float)
+    velocidad_tiro = db.Column(db.Float)
+    temperatura_tiro = db.Column(db.Float)
     fecha = db.Column(db.Date) 
+    estado = db.Column(db.String(50))  # Estado de la máquina (operativa, en mantenimiento, etc.)
 
 class TemperaturaHorno(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -117,8 +109,11 @@ class Descargue(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     maquina_id = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
     carros_descargados = db.Column(db.Integer)
-    paquetes_formados = db.Column(db.Integer)
+    tiempo_ultimo_carro = db.Column(db.Float)
+    efi_produccion = db.Column(db.Float)
+    paquetes_realizados = db.Column(db.float)
     fecha = db.Column(db.Date) 
+    estado = db.Column(db.String(50))  # Estado de la máquina (operativa, en mantenimiento, etc.)
 
 
 

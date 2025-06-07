@@ -16,12 +16,11 @@
         </div>
         <div class="card-body">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>📍 Ubicación:</strong> {{ maquina.ubicacion }}</li>
-                <li class="list-group-item"><strong>🌡️ Temperatura Máxima:</strong> {{ maquina.temperatura_max }}°</li>
-                <li class="list-group-item"><strong>🌡️ Temperatura Mínima:</strong> {{ maquina.temperatura_min }}°</li>
-                <li class="list-group-item"><strong>⚙️ Velocidad:</strong> {{ maquina.velocidad }} rpm</li>
-                <li class="list-group-item"><strong>🏭 Producción mínima:</strong> {{ maquina.produccion_min }} u/min</li>
-                <li class="list-group-item"><strong>📦 Capacidad de Apilado:</strong> {{ datos.capacidad_apilado }} unidades</li>
+                
+                <li class="list-group-item"><strong>🌡️ Estantes Descargados:</strong> {{ maquina.estantes_descargados }}</li>
+                <li class="list-group-item"><strong>🌡️ Tiempo Ultimo Estante:</strong> {{ maquina.tiempo_ultimo_estante }} u/min</li>
+                <li class="list-group-item"><strong>⚙️ Eficiencia de Produccion:</strong> {{ maquina.efi_produccion }} </li>
+                <li class="list-group-item"><strong>📦 Carros Cargados:</strong> {{ maquina.carros_cargados }} unidades</li>
             </ul>
         </div>
     </div>

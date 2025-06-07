@@ -29,20 +29,10 @@ def nueva_maquina():
     if request.method == 'POST':
 
         nombre = request.form.get('nombre', '').strip()
-        ubicacion = request.form['ubicacion']
-        temperatura_max = request.form['temperatura_max']
-        temperatura_min = request.form['temperatura_min']
-        velocidad = request.form['velocidad']
-        produccion_min = request.form['produccion_min']
         tipo = request.form['tipo']
 
         nueva = Maquina(
             nombre=nombre,
-            ubicacion=ubicacion,
-            temperatura_max=temperatura_max,
-            temperatura_min=temperatura_min,
-            velocidad=velocidad,
-            produccion_min=produccion_min,
             tipo=tipo
         )
         db.session.add(nueva)
@@ -119,10 +109,6 @@ def ver_maquina(id):
         return render_template('maquinas/detalle_apilado.html', maquina=maquina, datos=datos_especificos)
     elif tipo == 'descargue':
         maquina = Maquina.query.get_or_404(id)
-
-
-
-
         datos = Descargue.query.filter_by(maquina_id=maquina.id).order_by(Descargue.id.desc()).first()
 
         # Obtener fechas desde el query string
