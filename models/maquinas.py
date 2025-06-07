@@ -46,7 +46,7 @@ class Secador(db.Model):
     estantes_cargados = db.Column(db.Integer) 
     tiempo_ultimo_estante = db.Column(db.Float)
     efi_produccion = db.Column(db.Float)
-    cortes_por_minuto = db.Column(db.float)       
+    cortes_por_minuto = db.Column(db.Float)       
     fecha = db.Column(db.Date) 
     estado = db.Column(db.String(50))  # Estado de la máquina (operativa, en mantenimiento, etc.)
 
@@ -54,7 +54,7 @@ class Horno(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     maquina_id = db.Column(db.Integer, db.ForeignKey('maquina.id'), nullable=False)
     empujes_realizados = db.Column(db.Integer)
-    carros_quemados = db.Column(db.float)
+    carros_quemados = db.Column(db.Float)
     velocidad_tiro = db.Column(db.Float)
     temperatura_tiro = db.Column(db.Float)
     fecha = db.Column(db.Date) 
@@ -111,7 +111,7 @@ class Descargue(db.Model):
     carros_descargados = db.Column(db.Integer)
     tiempo_ultimo_carro = db.Column(db.Float)
     efi_produccion = db.Column(db.Float)
-    paquetes_realizados = db.Column(db.float)
+    paquetes_realizados = db.Column(db.Float)
     fecha = db.Column(db.Date) 
     estado = db.Column(db.String(50))  # Estado de la máquina (operativa, en mantenimiento, etc.)
 
