@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,  session, jsonify, abort
 from flask_login import login_required, current_user, login_user, logout_user
 from app import db, login_manager
-from models.maquinas import Maquina, Reporte, Moldeo, Apilado, Secador, Horno, Descargue, TemperaturaHorno
+from models.maquinas import Maquina, Moldeo, Apilado, Secador, Horno, Descargue, TemperaturaHorno
 
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
@@ -135,24 +135,24 @@ def ver_maquina(id):
         abort(404)
 
 # API PARA RECIBIR REPORTE
-@maquinas_bp.route('/api/reportes', methods=['POST'])
-@login_required
-def recibir_reporte():
-    data = request.get_json()
-    nuevo = Reporte(
-        id_maquina=data['id_maquina'],
-        temperatura=data['temperatura'],
-        velocidad=data['velocidad'],
-        produccion=data['produccion']
-    )
-    db.session.add(nuevo)
-    db.session.commit()
-    return jsonify({'mensaje': 'Reporte recibido'}), 201
+# @maquinas_bp.route('/api/reportes', methods=['POST'])
+# @login_required
+# def recibir_reporte():
+#     data = request.get_json()
+#     nuevo = Reporte(
+#         id_maquina=data['id_maquina'],
+#         temperatura=data['temperatura'],
+#         velocidad=data['velocidad'],
+#         produccion=data['produccion']
+#     )
+#     db.session.add(nuevo)
+#     db.session.commit()
+#     return jsonify({'mensaje': 'Reporte recibido'}), 201
 
-# VISTA PARA GRAFICAS
-@maquinas_bp.route('/maquina/<int:id>/graficas')
-@login_required
-def grafica(id):
-    maquina = Maquina.query.get_or_404(id)
-    reportes = Reporte.query.filter_by(id_maquina=id).order_by(Reporte.timestamp.asc()).all()
-    return render_template('maquinas/graficas.html', maquina=maquina, reportes=reportes)
+# # VISTA PARA GRAFICAS
+# @maquinas_bp.route('/maquina/<int:id>/graficas')
+# @login_required
+# def grafica(id):
+#     maquina = Maquina.query.get_or_404(id)
+#     reportes = Reporte.query.filter_by(id_maquina=id).order_by(Reporte.timestamp.asc()).all()
+#     return render_template('maquinas/graficas.html', maquina=maquina, reportes=reportes)
